@@ -97,7 +97,7 @@ Todas essas tabelas podem ser visualizadas na imagem abaixo:
 ---
 ## Conexão RDS
 
-Após listar as tabelas necessárias, elas foram criadas no banco de dados hospedado na RDS da AWS, conforme mostrado na imagem de conexão:
+Após listar as tabelas necessárias, elas foram criadas no banco de dados hospedado na RDS da AWS, conforme mostrado na imagem de conexão Workbench abaixo:
 
 ![Conexão na RDS](conexao_rds.png)
 
