@@ -1,0 +1,157 @@
+-- Criação do banco de dados
+CREATE DATABASE transporte_medico;
+
+-- Usar o banco de dados criado
+USE transporte_medico;
+
+-- Tabela Paciente
+CREATE TABLE paciente (
+    paciente_id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100),
+    data_nascimento DATE,
+    endereco VARCHAR(255),
+    condicao_medica VARCHAR(255)
+);
+
+-- Tabela Produto Médico
+CREATE TABLE produto_medico(
+    produto_id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100),
+    descricao VARCHAR(255),
+    quantidade_estoque INT
+);
+
+-- Tabela Unidade de Saúde
+CREATE TABLE unidade_saude (
+    unidade_id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100),
+    endereco VARCHAR(255),
+    tipo VARCHAR(50)
+);
+
+-- Tabela Veículo Médico
+CREATE TABLE veiculo (
+    veiculo_id INT PRIMARY KEY AUTO_INCREMENT,
+    tipo VARCHAR(50),
+    capacidade_passageiros INT,
+    capacidade_carga DECIMAL(10, 2)
+);
+
+-- Tabela Transporte de Pacientes
+CREATE TABLE transporte_pacientes (
+    transporte_id INT PRIMARY KEY AUTO_INCREMENT,
+    paciente_id INT,
+    veiculo_id INT,
+    data_partida DATETIME,
+    data_chegada DATETIME,
+    motorista_responsavel VARCHAR(100),
+    FOREIGN KEY (paciente_id) REFERENCES paciente(paciente_id),
+    FOREIGN KEY (veiculo_id) REFERENCES veiculo(veiculo_id)
+);
+
+-- Tabela Receituário (Relacionamento N para N entre Pacientes e Produtos Médicos)
+CREATE TABLE receituario (
+    receituario_id INT PRIMARY KEY AUTO_INCREMENT,
+    paciente_id INT,
+    produto_id INT,
+    quantidade_medicamento INT,
+    FOREIGN KEY (paciente_id) REFERENCES paciente(paciente_id),
+    FOREIGN KEY (produto_id) REFERENCES produto_medico(produto_id)
+);
+
+-- Tabela Entrega (Relacionamento N para N entre Produtos Médicos e Veículos)
+CREATE TABLE entrega (
+    entrega_id INT PRIMARY KEY AUTO_INCREMENT,
+    produto_id INT,
+    veiculo_id INT,
+    data_entrega DATETIME,
+    quantidade_medicamentos_entregues INT,
+    FOREIGN KEY (produto_id) REFERENCES produto_medico(produto_id),
+    FOREIGN KEY (veiculo_id) REFERENCES veiculo(veiculo_id)
+);
+
+-- Inserir dados na tabela Paciente
+INSERT INTO paciente (nome, data_nascimento, endereco, condicao_medica)
+VALUES ('João Silva', '1990-05-15', 'Rua A, 123', 'Diabetes'),
+       ('Maria Souza', '1985-10-20', 'Av. B, 456', 'Hipertensão'),
+       ('Carlos Oliveira', '1978-03-28', 'Praça C, 789', 'Asma');
+
+-- Inserir dados na tabela Produto Médico
+INSERT INTO produto_medico (nome, descricao, quantidade_estoque)
+VALUES ('Paracetamol', 'Analgésico e antipirético', 100),
+       ('Insulina', 'Hormônio para diabetes', 50),
+       ('Aspirina', 'Analgésico e anti-inflamatório', 75);
+
+-- Inserir dados na tabela Unidade de Saúde
+INSERT INTO unidade_saude (nome, endereco, tipo)
+VALUES ('Hospital Central', 'Av. Principal, 789', 'Hospital'),
+       ('Clínica Popular', 'Rua X, 234', 'Clínica'),
+       ('Posto de Saúde Z', 'Av. Y, 567', 'Posto de Saúde');
+
+-- Inserir dados na tabela Veículo Médico
+INSERT INTO veiculo (tipo, capacidade_passageiros, capacidade_carga)
+VALUES ('Ambulância', 4, 500),
+       ('Van Médica', 6, 800),
+       ('Carro de Apoio', 5, 600);
+
+-- Inserir dados na tabela Transporte de Pacientes
+INSERT INTO transporte_pacientes (paciente_id, veiculo_id, data_partida, data_chegada, motorista_responsavel)
+VALUES (1, 1, '2024-05-10 08:00:00', '2024-05-10 09:00:00', 'João da Silva'),
+       (2, 2, '2024-05-10 10:00:00', '2024-05-10 11:00:00', 'Maria Oliveira');
+
+-- Inserir dados na tabela Receituário
+INSERT INTO receituario (paciente_id, produto_id, quantidade_medicamento)
+VALUES (1, 1, 2),
+       (2, 2, 1);
+
+-- Inserir dados na tabela Entrega
+INSERT INTO entrega (produto_id, veiculo_id, data_entrega, quantidade_medicamentos_entregues)
+VALUES (1, 1, '2024-05-10 12:00:00', 2),
+       (2, 2, '2024-05-10 14:00:00', 1);
+
+
+-- Inserir mais dados na tabela Paciente
+INSERT INTO paciente (nome, data_nascimento, endereco, condicao_medica)
+VALUES
+    ('Ana Carolina Oliveira', '1982-03-10', 'Rua da Amizade, 321', 'Alergia a medicamentos'),
+    ('Pedro Henrique Santos', '1995-07-25', 'Av. das Flores, 555', 'Fratura na perna'),
+    ('Mariana Silva Souza', '1978-11-18', 'Rua das Estrelas, 987', 'Asma');
+
+-- Inserir mais dados na tabela Produto Médico
+INSERT INTO produto_medico (nome, descricao, quantidade_estoque)
+VALUES
+    ('Paracetamol', 'Analgésico e antitérmico', 200),
+    ('Máscara de Oxigênio', 'Equipamento para auxiliar na respiração', 30),
+    ('Soro Fisiológico', 'Solução para hidratação e administração de medicamentos', 100);
+
+-- Inserir mais dados na tabela Unidade de Saúde
+INSERT INTO unidade_saude (nome, endereco, tipo)
+VALUES
+    ('Clínica Cardiológica Vida Nova', 'Av. da Saúde, 1234', 'Clínica'),
+    ('Hospital da Criança Feliz', 'Rua do Cuidado, 789', 'Hospital'),
+    ('Centro de Atendimento Respiratório', 'Av. da Respiração, 567', 'Clínica');
+
+-- Inserir mais dados na tabela Veículo Médico
+INSERT INTO veiculo (tipo, capacidade_passageiros, capacidade_carga)
+VALUES
+    ('UTI Móvel', 2, 300),
+    ('Van de Emergência', 6, 800),
+    ('Helicóptero Médico', 4, 1000);
+
+-- Inserir mais dados na tabela Transporte de Pacientes
+INSERT INTO transporte_pacientes (paciente_id, veiculo_id, data_partida, data_chegada, motorista_responsavel)
+VALUES
+    (4, 2, '2024-05-05 15:30:00', '2024-05-05 16:15:00', 'Rafael Oliveira'),
+    (5, 3, '2024-05-06 10:45:00', '2024-05-06 11:30:00', 'Luisa Santos');
+
+-- Inserir mais dados na tabela Receituário (Tabela Intermediária)
+INSERT INTO receituario (paciente_id, produto_id, quantidade_medicamento)
+VALUES
+    (4, 1, 1), -- Pedro Henrique recebe 1 unidade de Paracetamol
+    (5, 3, 2); -- Mariana Silva Souza recebe 2 unidades de Soro Fisiológico
+
+-- Inserir mais dados na tabela Entrega (Tabela Intermediária)
+INSERT INTO entrega (produto_id, veiculo_id, data_entrega, quantidade_medicamentos_entregues)
+VALUES
+    (2, 1, '2024-05-07 08:00:00', 1), -- Entrega de 1 Máscara de Oxigênio pela UTI Móvel
+    (3, 3, '2024-05-08 14:30:00', 3); -- Entrega de 3 unidades de Soro Fisiológico pelo Helicóptero Médico
