@@ -95,7 +95,15 @@ Todas essas tabelas podem ser visualizadas na imagem abaixo:
 ![Entidades Principais](modelo_logico_pond2.png)
 
 ---
+## Conexão RDS
 
+Após listar as tabelas necessárias, elas foram criadas no banco de dados hospedado na RDS da AWS, conforme mostrado na imagem de conexão:
+
+![Conexão na RDS](conexao_rds.png)
+
+Em seguida, foram utilizadas as queries deste repositório para criar todas as tabelas e preenchê-las com dados fictícios, seguindo o modelo de entidade e relacionamento elaborado anteriormente.
+
+---
 ## Consulta Realizada e Resultados
 
 Para calcular o número médio de pacientes transportados por veículo por mês, a seguinte consulta foi realizada:
@@ -114,7 +122,6 @@ GROUP BY
     YEAR(data_partida),
     MONTH(data_partida),
     veiculo_id;
-
 ```
 
 Os resultados obtidos foram:
