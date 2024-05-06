@@ -1,6 +1,8 @@
-# Modelo de Entidade e Relacionamento para o Sistema de Transporte e Produtos Médicos
+**Modelo de Entidade e Relacionamento para o Sistema de Transporte e Produtos Médicos**
 
-Esta documentação descreve o modelo de entidade e relacionamento para um Sistema de Transporte e Produtos Médicos, incluindo entidades principais, atributos, relacionamentos, otimização e avaliação, bem como relacionamentos N para N e 1 para N. Além disso, foram criadas tabelas intermediárias para gerenciar relacionamentos de N para N entre pacientes, medicamentos e veículos.
+Esta documentação detalha o modelo de entidade e relacionamento para um Sistema de Transporte e Produtos Médicos, abrangendo entidades principais, atributos, relacionamentos, otimização e avaliação, bem como relacionamentos N para N e 1 para N. Também inclui a criação de tabelas intermediárias para gerenciar relacionamentos de N para N entre pacientes, medicamentos e veículos.
+
+---
 
 ## Entidades Principais
 
@@ -45,48 +47,58 @@ Esta documentação descreve o modelo de entidade e relacionamento para um Siste
 4. **Associação entre Produtos Médicos e Unidades de Saúde:**
    - Produtos médicos são associados à unidade de saúde onde serão utilizados.
 
-## Otimização e Avaliação
+---
 
-- Para otimizar as rotas de transporte de pacientes, considere algoritmos de roteirização, como o algoritmo de Dijkstra ou o algoritmo genético.
-- Avalie continuamente a eficácia do sistema monitorando métricas como tempo de transporte, disponibilidade de produtos médicos e satisfação dos pacientes.
+Essas são as principais entidades do modelo lógico e podem ser visualizadas nas imagens abaixo:
 
-## Relacionamentos N para N (Muitos-para-Muitos)
+![Entidades Principais](modelo_logico_pond.png)
 
-1. **Pacientes e Produtos Médicos:**
-   - Um paciente pode precisar de vários produtos médicos (por exemplo, medicamentos).
-   - Um produto médico pode ser usado por vários pacientes.
-   - Relacionamento N para N entre pacientes e produtos médicos.
-
-2. **Unidades de Saúde e Produtos Médicos:**
-   - Uma unidade de saúde pode usar vários produtos médicos (por exemplo, equipamentos, suprimentos).
-   - Um produto médico pode ser utilizado em várias unidades de saúde.
-   - Relacionamento N para N entre unidades de saúde e produtos médicos.
+---
 
 ## Relacionamentos 1 para N (Um-para-Muitos)
 
 1. **Pacientes e Unidades de Saúde:**
-   - Um paciente é atendido por uma única unidade de saúde (hospital, clínica, etc.).
-   - No entanto, uma unidade de saúde pode atender a vários pacientes.
+   - Um paciente é atendido por uma única unidade de saúde.
    - Relacionamento 1 para N entre pacientes e unidades de saúde.
 
 2. **Veículos Médicos e Pacientes/Produtos Médicos:**
    - Um veículo médico pode transportar vários pacientes ou entregar vários produtos médicos.
-   - Cada paciente ou produto médico está associado a um único veículo médico.
    - Relacionamento 1 para N entre veículos médicos e pacientes/produtos médicos.
+
+---
+
+## Relacionamentos N para N (Muitos-para-Muitos)
+
+1. **Pacientes e Produtos Médicos:**
+   - Relacionamento N para N entre pacientes e produtos médicos.
+
+2. **Unidades de Saúde e Produtos Médicos:**
+   - Relacionamento N para N entre unidades de saúde e produtos médicos.
+
+---
 
 ## Tabelas Intermediárias
 
-1. **Tabela Intermediária "Receituário":**
+Para representar os relacionamentos de N para N, foram criadas as seguintes tabelas intermediárias:
+
+1. **Tabela "Receituário":**
    - Relaciona pacientes e medicamentos.
    - Campos: ID do receituário, ID do paciente, ID do medicamento, Quantidade do medicamento.
 
-2. **Tabela Intermediária "Entrega":**
+2. **Tabela "Entrega":**
    - Relaciona medicamentos e veículos.
    - Campos: ID da entrega, ID do medicamento, ID do veículo, Data e hora da entrega.
 
-## Consulta Realizada
 
-A seguinte consulta foi realizada para calcular o número médio de pacientes transportados por veículo por mês:
+Todas essas tabelas podem ser visualizadas na imagem abaixo:
+
+![Entidades Principais](modelo_logico_pond2.png)
+
+---
+
+## Consulta Realizada e Resultados
+
+Para calcular o número médio de pacientes transportados por veículo por mês, a seguinte consulta foi realizada:
 
 ```sql
 SELECT 
@@ -94,21 +106,23 @@ SELECT
     YEAR(data_partida) AS ano,
     veiculo_id,
     COUNT(DISTINCT paciente_id) AS pacientes_transportados,
-    COUNT(DISTINCT paciente_id) / COUNT(DISTINCT DAY(data_partida)) AS media_pacientes_por_dia,
-    COUNT(DISTINCT paciente_id) / COUNT(DISTINCT MONTH(data_partida)) AS media_pacientes_por_mes
+    ROUND(COUNT(DISTINCT paciente_id) / COUNT(DISTINCT DAY(data_partida)), 1) AS media_pacientes_por_dia,
+    ROUND(COUNT(DISTINCT paciente_id) / COUNT(DISTINCT MONTH(data_partida)), 1) AS media_pacientes_por_mes
 FROM 
     transporte_pacientes
 GROUP BY 
     YEAR(data_partida),
     MONTH(data_partida),
     veiculo_id;
+
 ```
 
 Os resultados obtidos foram:
 
 | mes | ano  | veiculo_id | pacientes_transportados | media_pacientes_por_dia | media_pacientes_por_mes |
 |-----|------|------------|------------------------|-------------------------|-------------------------|
-| 5   | 2024 | 1          | 1                      | 1.0000                  | 1.0000                  |
-| 5   | 2024 | 2          | 1                      | 1.0000                  | 1.0000                  |
+| 5   | 2024 | 1          | 1                      | 0.5                     | 1.0                     |
+| 5   | 2024 | 2          | 2                      | 0.7                     | 2.0                     |
+| 5   | 2024 | 3          | 1                      | 1.0                     | 1.0                     |
 
-Este documento fornece uma visão completa do modelo de banco de dados e das consultas realizadas para análise de dados no Sistema de Transporte e Produtos Médicos.
+Esses valores refletem a média de pacientes transportados por veículo por dia e por mês, arredondados para um número após o ponto decimal.
